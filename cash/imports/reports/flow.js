@@ -17,16 +17,16 @@ import '../../../core/client/components/loading.js';
 import '../../../core/client/components/form-footer.js';
 
 // Method
-import {balanceReport} from '../../common/methods/reports/balance';
+import {flowReport} from '../../common/methods/reports/flow';
 
 // Schema
 import {CashSchema} from '../../common/collections/reports/cash';
 
 // Page
-import './balance.html';
+import './flow.html';
 
 // Declare template
-let indexTmpl = Template.Cash_balanceReport;
+let indexTmpl = Template.Cash_flowReport;
 
 // State
 let formDataState = new ReactiveVar(null);
@@ -44,7 +44,7 @@ indexTmpl.onCreated(function () {
 
             let formData = formDataState.get();
 
-            balanceReport.callPromise(formData)
+            flowReport.callPromise(formData)
                 .then((result)=> {
                     this.rptData.set(result);
                 }).catch((err)=> {
@@ -68,6 +68,54 @@ indexTmpl.helpers({
     },
     No(index){
         return index += 1;
+    },
+    cashTypeDoc(data){
+        let doc = {
+            Opening: {cashType: 'Opening', KHR: 0, USD: 0, THB: 0, TotalAsUSD: 0},
+            In: {cashType: 'In', KHR: 0, USD: 0, THB: 0, TotalAsUSD: 0},
+            Out: {cashType: 'Out', KHR: 0, USD: 0, THB: 0, TotalAsUSD: 0},
+            Closing: {cashType: 'Closing', KHR: 0, USD: 0, THB: 0, TotalAsUSD: 0},
+            Balance: {cashType: 'Balance', KHR: 0, USD: 0, THB: 0, TotalAsUSD: 0}
+        };
+
+        _.forEach(data, function (cashTypeDoc) {
+            _.forEach(cashTypeDoc.data, function (currencyDoc) {
+                doc[cashTypeDoc.cashType][currencyDoc.currencyId] = currencyDoc.amount;
+            });
+
+            doc[cashTypeDoc.cashType].TotalAsUSD = cashTypeDoc.totalAsUSD;
+
+            // Cal balance
+            if (cashTypeDoc.cashType == 'Opening' || cashTypeDoc.cashType == 'In') {
+                doc.Balance = {
+                    cashType: 'Balance',
+                    KHR: doc.Balance.KHR + doc[cashTypeDoc.cashType].KHR,
+                    USD: doc.Balance.USD + doc[cashTypeDoc.cashType].USD,
+                    THB: doc.Balance.THB + doc[cashTypeDoc.cashType].THB,
+                    TotalAsUSD: doc.Balance.TotalAsUSD + doc[cashTypeDoc.cashType].TotalAsUSD
+                }
+            } else {
+                doc.Balance = {
+                    cashType: 'Balance',
+                    KHR: doc.Balance.KHR - doc[cashTypeDoc.cashType].KHR,
+                    USD: doc.Balance.USD - doc[cashTypeDoc.cashType].USD,
+                    THB: doc.Balance.THB - doc[cashTypeDoc.cashType].THB,
+                    TotalAsUSD: doc.Balance.TotalAsUSD - doc[cashTypeDoc.cashType].TotalAsUSD
+                }
+            }
+        });
+
+
+        return _.map(doc, function (o) {
+            return o;
+        });
+    },
+    amountDoc(data){
+        return {
+            KHR: 100,
+            USD: 100,
+            THB: 100
+        }
     }
 });
 
@@ -119,4 +167,4 @@ let hooksObject = {
     }
 };
 
-AutoForm.addHooks('Cash_balanceReport', hooksObject);
+AutoForm.addHooks('Cash_flowReport', hooksObject);

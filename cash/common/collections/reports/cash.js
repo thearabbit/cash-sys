@@ -8,7 +8,7 @@ import {SelectOptsMethod} from '../../../common/methods/select-opts-method';
 // Lib
 import {SelectOpts} from '../../../imports/libs/select-opts.js';
 
-export const TransactionSchema = new SimpleSchema({
+export const CashSchema = new SimpleSchema({
     branchId: {
         type: [String],
         label: 'Branch',
@@ -17,17 +17,6 @@ export const TransactionSchema = new SimpleSchema({
             multiple: true,
             options: function () {
                 return SelectOpts.branch();
-            }
-        }
-    },
-    cashType: {
-        type: [String],
-        label: "Cash type",
-        autoform: {
-            type: "select2",
-            multiple: true,
-            options: function () {
-                return SelectOpts.cashType(false, true);
             }
         }
     },

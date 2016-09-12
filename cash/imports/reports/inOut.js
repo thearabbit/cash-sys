@@ -20,7 +20,7 @@ import '../../../core/client/components/form-footer.js';
 import {inOutReport} from '../../common/methods/reports/inOut';
 
 // Schema
-import {TransactionSchema} from '../../common/collections/reports/transaction';
+import {CashSchema} from '../../common/collections/reports/cash';
 
 // Page
 import './inOut.html';
@@ -65,7 +65,7 @@ indexTmpl.onCreated(function () {
 
 indexTmpl.helpers({
     schema(){
-        return TransactionSchema;
+        return CashSchema;
     },
     rptInit(){
         return Template.instance().rptInit.get();
