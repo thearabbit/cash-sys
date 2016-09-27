@@ -44,6 +44,7 @@ export const transactionReport = new ValidatedMethod({
             // --- Content ---
             let selector = {};
             selector.branchId = {$in: params.branchId};
+            selector.cashType = {$in: params.cashType};
             selector.currencyId = {$in: params.currencyId};
             selector.transactionDate = {$gte: fDate, $lte: tDate};
 

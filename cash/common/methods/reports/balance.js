@@ -12,8 +12,8 @@ import {Exchange} from '../../../../core/common/collections/exchange';
 
 import {Transaction} from '../../collections/transaction';
 
-export const balanceInOutReport = new ValidatedMethod({
-    name: 'cash.balanceInOutReport',
+export const balanceReport = new ValidatedMethod({
+    name: 'cash.balanceReport',
     mixins: [CallPromiseMixin],
     validate: null,
     run(params) {

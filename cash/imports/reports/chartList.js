@@ -17,16 +17,16 @@ import '../../../core/client/components/loading.js';
 import '../../../core/client/components/form-footer.js';
 
 // Method
-import {balanceReport} from '../../common/methods/reports/balance';
+import {chartListReport} from '../../common/methods/reports/chartList';
 
 // Schema
-import {CashSchema} from '../../common/collections/reports/cash';
+import {ChartListSchema} from '../../common/collections/reports/chartList';
 
 // Page
-import './balance.html';
+import './chartList.html';
 
 // Declare template
-let indexTmpl = Template.Cash_balanceReport;
+let indexTmpl = Template.Cash_chartListReport;
 
 // State
 let formDataState = new ReactiveVar(null);
@@ -44,7 +44,7 @@ indexTmpl.onCreated(function () {
 
             let formData = formDataState.get();
 
-            balanceReport.callPromise(formData)
+            chartListReport.callPromise(formData)
                 .then((result)=> {
                     this.rptData.set(result);
                 }).catch((err)=> {
@@ -58,7 +58,7 @@ indexTmpl.onCreated(function () {
 
 indexTmpl.helpers({
     schema(){
-        return CashSchema;
+        return ChartListSchema;
     },
     rptInit(){
         return Template.instance().rptInit.get();
@@ -119,4 +119,4 @@ let hooksObject = {
     }
 };
 
-AutoForm.addHooks('Cash_balanceReport', hooksObject);
+AutoForm.addHooks('Cash_chartListReport', hooksObject);

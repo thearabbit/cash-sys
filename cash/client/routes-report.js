@@ -94,3 +94,37 @@ CashRoutes.route('/balanceReport', {
         parent: 'cash.home'
     }
 });
+
+// Cash Flow
+import '../imports/reports/flow.js';
+CashRoutes.route('/flowReport', {
+    name: 'cash.flowReport',
+    title: 'Cash Flow Report',
+    action: function (params, queryParams) {
+        Layout.main('Cash_flowReport');
+    },
+    breadcrumb: {
+        //params: ['id'],
+        //queryParams: ['show', 'color'],
+        title: 'Cash Flow Report',
+        // icon: 'file-o',
+        parent: 'cash.home'
+    }
+});
+
+// Chart Cash List
+import '../imports/reports/chartList.js';
+CashRoutes.route('/chartListReport', {
+    name: 'cash.chartListReport',
+    title: 'Chart Cash List',
+    action: function (params, queryParams) {
+        Layout.main('Cash_chartListReport');
+    },
+    breadcrumb: {
+        //params: ['id'],
+        //queryParams: ['show', 'color'],
+        title: 'Chart Cash List',
+        // icon: 'file-o',
+        parent: 'cash.home'
+    }
+});
