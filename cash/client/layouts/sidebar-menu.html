@@ -29,7 +29,7 @@
                 <i class="fa fa-file-o"></i> <span>Cash Out</span>
             </a>
             <a href="{{pathFor 'cash.balanceReport'}}">
-                <i class="fa fa-file-o"></i> <span>Cash Balance (In & Out)</span>
+                <i class="fa fa-file-o"></i> <span>Cash Balance (In - Out)</span>
             </a>
             <a href="{{pathFor 'cash.flowReport'}}">
                 <i class="fa fa-file-o"></i> <span>Cash Flow</span>
@@ -53,10 +53,10 @@
                 <i class="fa fa-cog"></i> <span>Chart Cash</span>
             </a>
         </li>
-        <li class="{{isActiveRoute name='cash.lookupValue'}}">
-            <a href="{{pathFor 'cash.lookupValue'}}">
-                <i class="fa fa-cog"></i> <span>Lookup Value</span>
-            </a>
-        </li>
+        <!--<li class="{{isActiveRoute name='cash.lookupValue'}}">-->
+            <!--<a href="{{pathFor 'cash.lookupValue'}}">-->
+                <!--<i class="fa fa-cog"></i> <span>Lookup Value</span>-->
+            <!--</a>-->
+        <!--</li>-->
     {{/if}}
 </template>

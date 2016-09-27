@@ -43,7 +43,7 @@
                             <div class="rpt-title">
                                 <div class="rpt-title-3x rpt-kh-muol">{{rptTitle.khName}}</div>
                                 <div class="rpt-title-3x">{{rptTitle.enName}}</div>
-                                <div class="rpt-title-2x"><u>Cash Balance (In & Out) Report</u></div>
+                                <div class="rpt-title-2x"><u>Cash Balance (In - Out) Report</u></div>
                                 <div>{{rptTitle.enAddress}}</div>
                             </div>
                                 <!--{{/with}}-->
@@ -98,7 +98,7 @@
                                         <tr>
                                             <td class="text-right">{{No @index}}</td>
                                             <td>
-                                                {{dataByCashType._id}} : {{dataByCashType.chartCashDoc.name}}
+                                                {{dataByCashType._id}} : {{dataByCashType.name}}
                                             </td>
                                             <td class="text-right">{{numFormat dataByCashType.amountKHR "0,0.00"}}</td>
                                             <td class="text-right">{{numFormat dataByCashType.amountUSD "0,0.00"}}</td>

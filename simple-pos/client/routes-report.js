@@ -11,7 +11,7 @@ import {__} from '../../core/common/libs/tapi18n-callback-helper.js';
 
 // Layout
 import {Layout} from '../../core/client/libs/render-layout.js';
-import '../../core/imports/ui/layouts/report/index.html';
+import '../../core/imports/layouts/report/index.html';
 
 // Group
 let SimplePosRoutes = FlowRouter.group({
@@ -27,8 +27,25 @@ let SimplePosRoutes = FlowRouter.group({
     }
 });
 
+// Item List
+import '../imports/reports/itemList.js';
+SimplePosRoutes.route('/item-list-report', {
+    name: 'simplePos.itemListReport',
+    title: 'Item List',
+    action: function (params, queryParams) {
+        Layout.main('SimplePos_itemListReport');
+    },
+    breadcrumb: {
+        //params: ['id'],
+        //queryParams: ['show', 'color'],
+        title: 'Item List',
+        // icon: 'cart-plus',
+        parent: 'simplePos.home'
+    }
+});
+
 // Invoice
-import '../imports/ui/reports/invoice.js';
+import '../imports/reports/invoice.js';
 SimplePosRoutes.route('/invoice-report', {
     name: 'simplePos.invoiceReport',
     title: 'Invoice Report',
@@ -52,7 +69,7 @@ SimplePosRoutes.route('/invoice-report-gen', {
 });
 
 // Order
-import '../imports/ui/reports/order.js';
+import '../imports/reports/order.js';
 SimplePosRoutes.route('/order-report', {
     name: 'simplePos.orderReport',
     title: 'Order Report',

@@ -114,6 +114,15 @@ itemsTmpl.helpers({
 itemsTmpl.events({
     'change [name="chartCashId"]': function (event, instance) {
         instance.chartCashState.set(event.currentTarget.value);
+
+        // Clear
+        instance.amountState.set(0);
+        instance.$('[name="amount"]').val(0);
+
+        // Check exist value
+        if(event.currentTarget.value){
+            instance.$('[name="amount"]').focus();
+        }
     },
     'keyup [name="amount"]': function (event, instance) {
         let amount = instance.$('[name="amount"]').val();
@@ -144,9 +153,10 @@ itemsTmpl.events({
             });
         }
 
-        // Clear
-        instance.$('[name="chartCashId"]').val(null).trigger('change');
-        instance.$('[name="amount"]').val(null);
+        // Reset
+        AutoForm.resetForm('Cash_transactionItems');
+        instance.chartCashState.set(null);
+        instance.amountState.set(0);
     },
     // Reactive table for item
     'click .js-update-item': function (event, instance) {

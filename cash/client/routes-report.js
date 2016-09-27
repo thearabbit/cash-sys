@@ -82,14 +82,14 @@ CashRoutes.route('/outReport', {
 import '../imports/reports/balance.js';
 CashRoutes.route('/balanceReport', {
     name: 'cash.balanceReport',
-    title: 'Cash Balance (In & Out) Report',
+    title: 'Cash Balance (In - Out) Report',
     action: function (params, queryParams) {
         Layout.main('Cash_balanceReport');
     },
     breadcrumb: {
         //params: ['id'],
         //queryParams: ['show', 'color'],
-        title: 'Cash Balance (In & Out) Report',
+        title: 'Cash Balance (In - Out) Report',
         // icon: 'file-o',
         parent: 'cash.home'
     }

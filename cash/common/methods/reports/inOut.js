@@ -11,6 +11,7 @@ import {Branch} from '../../../../core/common/collections/branch';
 import {Exchange} from '../../../../core/common/collections/exchange';
 
 import {Transaction} from '../../collections/transaction';
+import {ChartCash} from '../../collections/chartCash';
 
 export const inOutReport = new ValidatedMethod({
     name: 'cash.inOutReport',
@@ -22,8 +23,8 @@ export const inOutReport = new ValidatedMethod({
 
             let rptTitle, rptHeader, rptContent;
 
-            let fDate = moment(params.repDate[0]).toDate();
-            let tDate = moment(params.repDate[1]).add(1, 'days').toDate();
+            let fDate = moment(params.repDate[0]).startOf('day').toDate();
+            let tDate = moment(params.repDate[1]).endOf('day').toDate();
 
             // --- Title ---
             rptTitle = Company.findOne();
@@ -56,22 +57,9 @@ export const inOutReport = new ValidatedMethod({
                     $unwind: "$items"
                 },
                 {
-                    $lookup: {
-                        from: "cash_chart",
-                        localField: "items.chartCashId",
-                        foreignField: "_id",
-                        as: "chartCashDoc"
-                    }
-                },
-                {
-                    $unwind: "$chartCashDoc"
-                },
-                {
                     $project: {
-                        currencyId: 1, items: 1, chartCashDoc: 1,
-                        chartCashLabel: {
-                            $concat: ["$chartCashDocDoc._id", " : ", "$chartCashDoc.name"]
-                        }
+                        currencyId: 1,
+                        items: 1,
                     }
                 },
                 {
@@ -80,14 +68,12 @@ export const inOutReport = new ValidatedMethod({
                             currencyId: "$currencyId",
                             chartCashId: "$items.chartCashId"
                         },
-                        chartCashDoc: {$last: "$chartCashDoc"},
                         sumAmount: {$sum: "$items.amount"}
                     }
                 },
                 {
                     $group: {
                         _id: "$_id.chartCashId",
-                        chartCashDoc: {$last: "$chartCashDoc"},
                         amountKHR: {
                             $sum: {
                                 $cond: {
@@ -160,6 +146,48 @@ export const inOutReport = new ValidatedMethod({
                     }
                 }
             ])[0];
+
+            // Convert data to object
+            let dataObj = {};
+            rptContent.data.forEach(function (val) {
+                dataObj[val._id] = val;
+            });
+
+            // Get chart
+            let chartObj = {};
+            ChartCash.aggregate([
+                {
+                    $match: {cashType: params.cashType}
+                },
+                {
+                    $sort: {_id: 1}
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        amountKHR: {
+                            $ifNull: ["$amountKHR", 0]
+                        },
+                        amountUSD: {
+                            $ifNull: ["$amountUSD", 0]
+                        },
+                        amountTHB: {
+                            $ifNull: ["$amountTHB", 0]
+                        },
+                        amountAsUSD: {
+                            $ifNull: ["$amountAsUSD", 0]
+                        }
+                    }
+                }
+            ]).forEach(function (val) {
+                chartObj[val._id] = val;
+            });
+
+            // Merge data
+            rptContent.data = _.map(_.defaultsDeep(dataObj, chartObj), (o)=> {
+                return o;
+            });
 
             return {rptTitle, rptHeader, rptContent};
         }

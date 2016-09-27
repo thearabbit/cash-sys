@@ -11,6 +11,7 @@ import {Branch} from '../../../../core/common/collections/branch';
 import {Exchange} from '../../../../core/common/collections/exchange';
 
 import {Transaction} from '../../collections/transaction';
+import {ChartCash} from '../../collections/chartCash';
 
 export const balanceReport = new ValidatedMethod({
     name: 'cash.balanceReport',
@@ -22,8 +23,8 @@ export const balanceReport = new ValidatedMethod({
 
             let rptTitle, rptHeader, rptContent;
 
-            let fDate = moment(params.repDate[0]).toDate();
-            let tDate = moment(params.repDate[1]).add(1, 'days').toDate();
+            let fDate = moment(params.repDate[0]).startOf('day').toDate();
+            let tDate = moment(params.repDate[1]).endOf('day').toDate();
 
             // --- Title ---
             rptTitle = Company.findOne();
@@ -55,20 +56,23 @@ export const balanceReport = new ValidatedMethod({
                 {
                     $unwind: "$items"
                 },
-                {
-                    $lookup: {
-                        from: "cash_chart",
-                        localField: "items.chartCashId",
-                        foreignField: "_id",
-                        as: "chartCashDoc"
-                    }
-                },
-                {
-                    $unwind: "$chartCashDoc"
-                },
+                // {
+                //     $lookup: {
+                //         from: "cash_chart",
+                //         localField: "items.chartCashId",
+                //         foreignField: "_id",
+                //         as: "chartCashDoc"
+                //     }
+                // },
+                // {
+                //     $unwind: "$chartCashDoc"
+                // },
                 {
                     $project: {
-                        cashType: 1, currencyId: 1, items: 1, chartCashDoc: 1
+                        cashType: 1,
+                        currencyId: 1,
+                        items: 1,
+                        // chartCashDoc: 1
                     }
                 },
                 {
@@ -78,7 +82,7 @@ export const balanceReport = new ValidatedMethod({
                             chartCashId: "$items.chartCashId"
                         },
                         cashType: {$last: "$cashType"},
-                        chartCashDoc: {$last: "$chartCashDoc"},
+                        // chartCashDoc: {$last: "$chartCashDoc"},
                         sumAmount: {$sum: "$items.amount"}
                     }
                 },
@@ -86,7 +90,7 @@ export const balanceReport = new ValidatedMethod({
                     $group: {
                         _id: "$_id.chartCashId",
                         cashType: {$last: "$cashType"},
-                        chartCashDoc: {$last: "$chartCashDoc"},
+                        // chartCashDoc: {$last: "$chartCashDoc"},
                         amountKHR: sumAmount("KHR"),
                         amountUSD: sumAmount("USD"),
                         amountTHB: sumAmount("THB"),
@@ -167,6 +171,56 @@ export const balanceReport = new ValidatedMethod({
                     }
                 }
             ])[0];
+
+            // Merge data
+            let tmpData = [];
+            rptContent.data.forEach(function (val) {
+                // Get data by cash type
+                let dataByCashTypeObj = {};
+                val.dataByCashType.forEach(function (valByCashType) {
+                    dataByCashTypeObj[valByCashType._id] = valByCashType;
+                });
+
+                // Get chart
+                let chartObj = {};
+                ChartCash.aggregate([
+                    {
+                        $match: {cashType: val._id}
+                    },
+                    {
+                        $sort: {_id: 1}
+                    },
+                    {
+                        $project: {
+                            _id: 1,
+                            name: 1,
+                            amountKHR: {
+                                $ifNull: ["$amountKHR", 0]
+                            },
+                            amountUSD: {
+                                $ifNull: ["$amountUSD", 0]
+                            },
+                            amountTHB: {
+                                $ifNull: ["$amountTHB", 0]
+                            },
+                            amountAsUSD: {
+                                $ifNull: ["$amountAsUSD", 0]
+                            }
+                        }
+                    }
+                ]).forEach(function (valChart) {
+                    chartObj[valChart._id] = valChart;
+                });
+
+                // Merge data
+                val.dataByCashType = _.map(_.defaultsDeep(dataByCashTypeObj, chartObj), (o)=> {
+                    return o;
+                });
+
+                tmpData.push(val);
+            });
+
+            rptContent.data = tmpData;
 
             return {rptTitle, rptHeader, rptContent};
         }
