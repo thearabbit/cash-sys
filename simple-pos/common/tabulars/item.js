@@ -11,10 +11,10 @@ import {lightbox} from 'meteor/theara:lightbox-helpers';
 import {tabularOpts} from '../../../core/common/libs/tabular-opts.js';
 
 // Collection
-import {Item} from '../../imports/api/collections/item.js';
+import {Item} from '../collections/item.js';
 
 // Page
-Meteor.isClient && require('../../imports/ui/pages/item.html');
+Meteor.isClient && require('../../imports/pages/item.html');
 
 tabularOpts.name = 'simplePos.item';
 tabularOpts.collection = Item;
@@ -29,6 +29,14 @@ tabularOpts.columns = [
             return numeral(val).format('$ 0,0.00');
         }
     },
+    {
+        data: "parentId",
+        title: "Parent",
+        render: function (val, type, doc) {
+            return val;
+        }
+    },
+    {data: "order", title: "Order"},
     {
         data: "photo",
         title: "Photo",

@@ -1,6 +1,6 @@
 <!--Item Temporary-->
 <template name="Cash_transactionItems">
-    {{#autoForm schema=schema id="Cash_transactionItems"}}
+    {{#autoForm schema=schema id="Cash_transactionItems" resetOnSuccess=true}}
         <div class="row">
             <div class="col-sm-7">
                 {{> afQuickField name="chartCashId" label=false}}

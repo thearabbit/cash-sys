@@ -22,8 +22,8 @@ export const flowReport = new ValidatedMethod({
 
             let rptTitle, rptHeader, rptContent;
 
-            let fDate = moment(params.repDate[0]).toDate();
-            let tDate = moment(params.repDate[1]).add(1, 'days').toDate();
+            let fDate = moment(params.repDate[0]).startOf('day').toDate();
+            let tDate = moment(params.repDate[1]).endOf('day').toDate();
 
             // --- Title ---
             rptTitle = Company.findOne();

@@ -228,8 +228,8 @@ AutoForm.addHooks([
 
 
 function clearItems() {
-    $('[name="chartCashId"]').val(null).trigger('change');
-    $('[name="amount"]').val(null);
+    // Reset item form (child)
+    AutoForm.resetForm('Cash_transactionItems');
 
     // Remove itemsCollection
     itemsCollection.remove({});
