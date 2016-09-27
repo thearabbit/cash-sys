@@ -3,7 +3,7 @@ import {idGenerator} from 'meteor/theara:id-generator';
 import moment from 'moment';
 
 // Collection
-import  {Exchange} from '../../common/collections/exchange';
+import  {Exchange} from '../../imports/api/collections/exchange';
 
 Exchange.before.insert(function (userId, doc) {
     doc.exDateText = moment(doc.exDate).format('DD/MM/YYYY');

@@ -2,7 +2,7 @@ import {Meteor} from 'meteor/meteor';
 import {SimpleSchema} from 'meteor/aldeed:simple-schema';
 
 // Collection
-import {Branch} from '../../common/collections/branch.js';
+import {Branch} from '../../imports/api/collections/branch.js';
 
 Meteor.publish('core.branch', function coreBranch(selector = {}, options = {}) {
     this.unblock();
